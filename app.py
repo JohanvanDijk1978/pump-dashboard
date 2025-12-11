@@ -3,14 +3,18 @@ import json
 import time
 from pathlib import Path
 import base64
-from openai import OpenAI
-
+from google import genai
+from google.genai import types
+import base64
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 import requests
 from werkzeug.utils import secure_filename
 from solders.keypair import Keypair
+import io
+from PIL import Image
+
 
 # -----------------------------------------------------------
 # Load environment variables
@@ -21,8 +25,8 @@ load_dotenv(BASE_DIR / ".env")
 PUMPPORTAL_API_KEY = os.getenv("PUMPPORTAL_API_KEY")
 MORALIS_API_KEY = os.getenv("MORALIS_API_KEY")
 PORT = int(os.getenv("PORT", 4000))
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-openai_client = OpenAI() if OPENAI_API_KEY else None
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+gemini_client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
 
 
 print("DEBUG: PUMPPORTAL_API_KEY loaded?", bool(PUMPPORTAL_API_KEY))
@@ -36,6 +40,7 @@ app = Flask(
     static_folder="public",
     static_url_path=""
 )
+app.config["MAX_CONTENT_LENGTH"] = 8 * 500 * 500
 CORS(app)
 
 
@@ -53,8 +58,8 @@ def health():
 
 @app.post("/api/generate-image")
 def generate_image():
-    if not openai_client:
-        return jsonify({"error": "Server misconfigured: missing OPENAI_API_KEY"}), 500
+    if not gemini_client or not GEMINI_API_KEY:
+        return jsonify({"error": "Server misconfigured: missing GEMINI_API_KEY"}), 500
 
     data = request.get_json(silent=True) or {}
     prompt = (data.get("prompt") or "").strip()
@@ -63,33 +68,48 @@ def generate_image():
         return jsonify({"error": "Prompt is required"}), 400
 
     try:
-        # Use Responses API with the image_generation tool
-        response = openai_client.responses.create(
-            model="gpt-4.1-mini",
-            input=prompt,
-            tools=[{"type": "image_generation"}],
-            tool_choice={"type": "image_generation"},
+        response = gemini_client.models.generate_content(
+            model="gemini-2.5-flash-image",
+            contents=[prompt],
         )
 
-        # Pull out base64 image from output
-        image_data = [
-            output.result
-            for output in response.output
-            if output.type == "image_generation_call"
-        ]
+        image_bytes = None
+        for part in response.candidates[0].content.parts:
+            inline = getattr(part, "inline_data", None)
+            if inline and inline.data:
+                image_bytes = inline.data
+                break
 
-        if not image_data:
-            return jsonify({"error": "No image data returned from OpenAI"}), 500
+        if not image_bytes:
+            return jsonify({"error": "No image data returned from Gemini"}), 500
 
-        image_base64 = image_data[0]
+        # 🔽 NEW: compress + resize before sending to browser
+        # 🔽 Compress + force size to 500x500 before sending to browser
+        try:
+            img = Image.open(io.BytesIO(image_bytes)).convert("RGBA")
+
+            # Force exact 500x500, high-quality resize
+            target_size = (500, 500)
+            img = img.resize(target_size, Image.LANCZOS)
+
+            buf = io.BytesIO()
+            img.save(buf, format="PNG", optimize=True)
+            compressed_bytes = buf.getvalue()
+        except Exception:
+            # If anything goes wrong, fall back to original bytes
+            compressed_bytes = image_bytes
+
+
+        image_base64 = base64.b64encode(compressed_bytes).decode("utf-8")
         return jsonify({"image_base64": image_base64})
 
     except Exception as e:
-        print("OpenAI image error:", e)
+        print("Gemini image error:", e)
         return jsonify({
             "error": "Failed to generate image",
             "details": str(e),
         }), 500
+
 
 
 # -----------------------------------------------------------

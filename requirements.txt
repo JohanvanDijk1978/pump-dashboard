@@ -3,4 +3,6 @@ flask-cors
 python-dotenv
 requests
 solders
-openai
+google-genai
+Pillow
+
