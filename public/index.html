@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="shortcut icon" href="logo.png" type="image/png" />
+
+    <title>Borz Launch</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      /* THEME VARIABLES */
+      :root {
+        --bg: #050816;
+        --text: #f8f8ff;
+        --muted: #a0aec0;
+        --card-bg: #0b1020;
+        --border: #2d3748;
+        --button-bg: #38bdf8;
+        --button-bg-hover: #0ea5e9;
+        --button-text: #050816;
+        --secondary-bg: #1f2933;
+        --secondary-bg-hover: #111827;
+        --link: #38bdf8;
+      }
+
+      body[data-theme="dark"] {
+        --bg: #050816;
+        --text: #f8f8ff;
+        --muted: #a0aec0;
+        --card-bg: #0b1020;
+        --border: #2d3748;
+        --button-bg: #38bdf8;
+        --button-bg-hover: #0ea5e9;
+        --button-text: #050816;
+        --secondary-bg: #1f2933;
+        --secondary-bg-hover: #111827;
+        --link: #38bdf8;
+      }
+
+      body[data-theme="light"] {
+        --bg: #f7fafc;
+        --text: #1a202c;
+        --muted: #4a5568;
+        --card-bg: #ffffff;
+        --border: #cbd5e0;
+        --button-bg: #3182ce;
+        --button-bg-hover: #2b6cb0;
+        --button-text: #edf2f7;
+        --secondary-bg: #e2e8f0;
+        --secondary-bg-hover: #cbd5e0;
+        --link: #3182ce;
+      }
+
+      body[data-theme="neon"] {
+        --bg: #020617;
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+        --card-bg: #020617;
+        --border: #1f2937;
+        --button-bg: #22c55e;
+        --button-bg-hover: #16a34a;
+        --button-text: #020617;
+        --secondary-bg: #111827;
+        --secondary-bg-hover: #020617;
+        --link: #22c55e;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .app {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 24px;
+        background: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+      }
+
+      h1 {
+        margin-top: 0;
+        margin-bottom: 8px;
+      }
+
+      .subtitle {
+        margin-top: 0;
+        margin-bottom: 16px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .theme-picker {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      .theme-picker label {
+        font-weight: 600;
+        margin-right: 6px;
+      }
+
+      .theme-picker select {
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .field {
+        margin-bottom: 12px;
+      }
+
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      textarea,
+      select[name="pool"] {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        box-sizing: border-box;
+      }
+
+      textarea {
+        min-height: 60px;
+        resize: vertical;
+      }
+
+      input[type="file"] {
+        color: var(--text);
+      }
+
+      button {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-weight: 600;
+        background: var(--button-bg);
+        color: var(--button-text);
+        transition: transform 0.05s ease, box-shadow 0.05s ease,
+          background 0.15s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3);
+        background: var(--button-bg-hover);
+      }
+
+      button.secondary {
+        background: var(--secondary-bg);
+        color: var(--text);
+        margin-right: 8px;
+      }
+
+      button.secondary:hover {
+        background: var(--secondary-bg-hover);
+        box-shadow: none;
+      }
+
+      #submitBtn {
+        margin-top: 12px;
+      }
+
+      .status {
+        margin-top: 8px;
+        min-height: 20px;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
+      .result-card {
+        margin-top: 16px;
+        padding: 12px 14px;
+        background: #111827;
+        border-radius: 12px;
+        font-size: 0.9rem;
+      }
+
+      body[data-theme="light"] .result-card {
+        background: #edf2f7;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      #multiResults ul {
+        padding-left: 16px;
+      }
+
+      a {
+        color: var(--link);
+      }
+    </style>
+  </head>
+  <body data-theme="dark">
+    <div class="app">
+      <div class="top-row">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <img
+            src="logo.png"
+            alt="Logo"
+            style="width: 100px; height: 100px; object-fit: contain"
+          />
+          <div>
+            <h1>Borz Launch</h1>
+            <p class="subtitle">
+              Launch Pump.fun or Bonk.fun tokens via PumpPortal, vamp existing
+              coins
+            </p>
+          </div>
+        </div>
+
+        <div class="theme-picker">
+          <label for="themeSelect">Theme:</label>
+          <select id="themeSelect">
+            <option value="dark">Dark</option>
+            <option value="neon">Neon</option>
+            <option value="light">Light</option>
+          </select>
+        </div>
+      </div>
+
+      <form id="tokenForm" enctype="multipart/form-data">
+        <!-- Import existing coin -->
+        <div class="field">
+          <label>Import from existing coin (mint address)</label>
+          <div style="display: flex; gap: 8px">
+            <input
+              type="text"
+              id="importMint"
+              placeholder="Paste token mint address here"
+              style="flex: 1"
+            />
+            <button type="button" id="importMintBtn">Import</button>
+          </div>
+          <small
+            >Paste a Pump.fun / Bonk.fun token mint and we'll try to copy its
+            name, symbol, socials and image.</small
+          >
+        </div>
+
+        <!-- Launch platform -->
+        <div class="field">
+          <label>Launch platform</label>
+          <select name="pool" id="poolSelect">
+            <option value="pump" selected>Pump.fun</option>
+            <option value="bonk">Bonk.fun</option>
+          </select>
+          <small
+            >Choose whether to create the token on Pump.fun or Bonk.fun.</small
+          >
+        </div>
+
+        <!-- Basic metadata -->
+        <!-- Amount & multi-launch -->
+        <div class="field">
+          <label>Dev Buy Amount (SOL)</label>
+          <input
+            type="number"
+            name="amount"
+            step="0.001"
+            min="0"
+            placeholder="0.05"
+          />
+        </div>
+
+        <div class="field">
+          <label>Name</label>
+          <input type="text" name="name" placeholder="My Awesome Token" />
+        </div>
+
+        <div class="field">
+          <label>Symbol</label>
+          <input type="text" name="symbol" placeholder="MAT" />
+        </div>
+
+        <div class="field">
+          <label>Description</label>
+          <textarea
+            name="description"
+            placeholder="Short description of your token..."
+          ></textarea>
+        </div>
+
+        <!-- Socials -->
+        <div class="field">
+          <label>Twitter</label>
+          <input
+            type="text"
+            name="twitter"
+            placeholder="https://twitter.com/..."
+          />
+        </div>
+
+        <div class="field">
+          <label>Telegram</label>
+          <input type="text" name="telegram" placeholder="https://t.me/..." />
+        </div>
+
+        <div class="field">
+          <label>Website</label>
+          <input
+            type="text"
+            name="website"
+            placeholder="https://your-site.com"
+          />
+        </div>
+
+        <!-- Image upload + preview -->
+        <div class="field">
+          <label>Token Image (optional if importing)</label>
+          <input type="file" name="image" accept="image/*" />
+        </div>
+        <!-- AI image generation with ChatGPT -->
+        <div class="field">
+          <label>Create image with ChatGPT</label>
+          <textarea
+            id="aiImagePrompt"
+            placeholder="Describe the token image you want (style, colors, vibes)..."
+          ></textarea>
+          <div
+            style="
+              margin-top: 8px;
+              display: flex;
+              gap: 8px;
+              align-items: center;
+            "
+          >
+            <button type="button" id="generateImageBtn">Generate Image</button>
+            <span
+              id="aiImageStatus"
+              style="font-size: 0.8rem; color: var(--muted)"
+            ></span>
+          </div>
+          <small>
+            The image will be generated with the OpenAI API, shown in the
+            preview above, and used for your token unless you upload/import a
+            different one.
+          </small>
+        </div>
+
+        <input type="hidden" name="ai_image_base64" id="aiImageBase64" />
+
+        <!-- Hidden metadata URI for imported coins -->
+        <input type="hidden" name="metadata_uri" id="metadataUriField" />
+
+        <div class="field">
+          <label>Image Preview</label>
+          <img
+            id="imagePreview"
+            class="hidden"
+            style="max-width: 200px; border-radius: 8px"
+          />
+        </div>
+
+        <div class="field">
+          <label>How many coins to launch?</label>
+          <input type="number" name="launch_count" min="1" max="10" value="1" />
+          <small>(Each launch is a completely new token / mint.)</small>
+        </div>
+
+        <div class="field">
+          <label>
+            <input type="checkbox" name="instant_sell" />
+            Instant sell dev wallet after launch
+          </label>
+          <small>
+            After each dev buy, sell 100% of the dev wallet's tokens.
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Instant sell delay</label>
+          <select name="sell_delay" id="sellDelay">
+            <option value="1">1 second</option>
+            <option value="2">2 seconds</option>
+            <option value="5" selected>5 seconds</option>
+            <option value="10">10 seconds</option>
+          </select>
+          <small>
+            How long to wait after launch before triggering the instant sell (if
+            enabled).
+          </small>
+        </div>
+
+        <!-- Buttons -->
+        <div class="field" style="margin-top: 12px">
+          <button
+            type="button"
+            id="clearFormBtn"
+            class="secondary"
+            style="width: auto"
+          >
+            Clear Form
+          </button>
+          <button type="submit" id="submitBtn">Launch Token</button>
+        </div>
+      </form>
+
+      <p id="status" class="status"></p>
+
+      <div id="result" class="result-card hidden">
+        <h2>Token Created ✅</h2>
+        <p><strong>Mint:</strong> <span id="mint"></span></p>
+        <p><strong>Tx:</strong> <span id="txid"></span></p>
+
+        <div id="multiResults" class="hidden"></div>
+
+        <p id="pumpLinkWrapper" class="hidden">
+          <a id="pumpLink" target="_blank" rel="noopener noreferrer">
+            View on Pump.fun
+          </a>
+        </p>
+
+        <p id="solscanLinkWrapper" class="hidden">
+          <a id="solscanLink" target="_blank" rel="noopener noreferrer">
+            View on Solscan
+          </a>
+        </p>
+
+        <pre id="rawError" class="hidden"></pre>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
