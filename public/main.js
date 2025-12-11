@@ -12,6 +12,8 @@ const pumpLink = document.getElementById("pumpLink");
 const solscanLink = document.getElementById("solscanLink");
 const pumpLinkWrapper = document.getElementById("pumpLinkWrapper");
 const solscanLinkWrapper = document.getElementById("solscanLinkWrapper");
+const axiomLink = document.getElementById("axiomLink");
+const axiomLinkWrapper = document.getElementById("axiomLinkWrapper");
 const rawError = document.getElementById("rawError");
 const multiResults = document.getElementById("multiResults");
 
@@ -102,6 +104,7 @@ form.addEventListener("submit", async (e) => {
 
         const pumpUrl = `https://pump.fun/${mint}`;
         const solscanTokenUrl = `https://solscan.io/token/${mint}`;
+        const axiomurl = `https://axiom.trade/meme/${mint}`;
         const createTxUrl =
           createSig && createSig !== "Unknown"
             ? `https://solscan.io/tx/${createSig}`
@@ -115,6 +118,7 @@ form.addEventListener("submit", async (e) => {
           <li>
             <strong>Launch ${index + 1} (${pool})</strong><br>
             Mint: <a href="${pumpUrl}" target="_blank" rel="noopener noreferrer">${mint}</a><br>
+            CA: <a href="${axiomurl}" target="_blank" rel="noopener noreferrer">${mint}</a><br>
             Token: <a href="${solscanTokenUrl}" target="_blank" rel="noopener noreferrer">${mint}</a><br>
             Create Tx: ${
               createTxUrl
@@ -143,6 +147,9 @@ form.addEventListener("submit", async (e) => {
     if (data.mint) {
       pumpLink.href = `https://pump.fun/${data.mint}`;
       pumpLinkWrapper.classList.remove("hidden");
+
+      axiomlink.href = `https://axiom.trade/meme//${data.mint}`;
+      axiomLinkWrapper.classList.remove("hidden");
 
       solscanLink.href = `https://solscan.io/token/${data.mint}`;
       solscanLinkWrapper.classList.remove("hidden");
