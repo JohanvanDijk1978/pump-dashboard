@@ -56,6 +56,7 @@ def index():
 def health():
     return jsonify({"status": "ok"})
 
+
 @app.post("/api/generate-image")
 def generate_image():
     if not gemini_client or not GEMINI_API_KEY:
