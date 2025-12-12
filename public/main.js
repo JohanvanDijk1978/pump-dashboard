@@ -163,6 +163,17 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+// Quick-select amount buttons
+const amountInput = form.elements["amount"];
+const amountButtons = document.querySelectorAll(".amountBtn");
+
+amountButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const value = btn.getAttribute("data-value");
+    if (amountInput) amountInput.value = value;
+  });
+});
+
 // ---------- Import existing token metadata ----------
 importMintBtn.addEventListener("click", async () => {
   const mint = importMintInput.value.trim();
