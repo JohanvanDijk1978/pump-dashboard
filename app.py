@@ -43,6 +43,16 @@ app = Flask(
 app.config["MAX_CONTENT_LENGTH"] = 8 * 500 * 500
 CORS(app)
 
+metadata_uri = request.form.get("metadata_uri")
+
+if metadata_uri:
+    # Use imported metadata as-is
+    token_metadata = {"name": name, "symbol": symbol, "uri": metadata_uri}
+else:
+    # Build metadata fresh using current fields (twitter/telegram/website)
+    # upload metadata, get new URI, then set token_metadata uri to that
+    ...
+
 
 # -----------------------------------------------------------
 # Routes

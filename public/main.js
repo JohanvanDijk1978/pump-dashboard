@@ -36,6 +36,14 @@ const clearFormBtn = document.getElementById("clearFormBtn");
 // Theme select
 const themeSelect = document.getElementById("themeSelect");
 
+function invalidateImportedMetadataUri() {
+  if (metadataUriField && metadataUriField.value) {
+    metadataUriField.value = "";
+    // Optional: tell user why socials may not apply unless metadata is rebuilt
+    // status.textContent = "Metadata URI cleared (will use current form fields on launch).";
+  }
+}
+
 // ---------- Theme handling ----------
 (function initTheme() {
   const savedTheme = localStorage.getItem("siteTheme") || "dark";
@@ -162,6 +170,13 @@ form.addEventListener("submit", async (e) => {
     submitBtn.textContent = "Launch Token";
   }
 });
+function invalidateImportedMetadataUri() {
+  if (metadataUriField && metadataUriField.value) {
+    metadataUriField.value = "";
+    // Optional: tell user why socials may not apply unless metadata is rebuilt
+    // status.textContent = "Metadata URI cleared (will use current form fields on launch).";
+  }
+}
 
 // Quick-select amount buttons
 const amountInput = form.elements["amount"];
