@@ -23,6 +23,16 @@ const importMintBtn = document.getElementById("importMintBtn");
 
 // Metadata & image preview
 const metadataUriField = document.getElementById("metadataUriField");
+["twitter", "telegram", "website", "name", "symbol", "description"].forEach(
+  (f) => {
+    const el = form.elements[f];
+    if (!el) return;
+    el.addEventListener("input", () => {
+      if (metadataUriField && metadataUriField.value)
+        metadataUriField.value = "";
+    });
+  }
+);
 const imagePreview = document.getElementById("imagePreview");
 const imageInput = form.elements["image"];
 const aiImagePrompt = document.getElementById("aiImagePrompt");
