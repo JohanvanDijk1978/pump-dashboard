@@ -23,16 +23,6 @@ const importMintBtn = document.getElementById("importMintBtn");
 
 // Metadata & image preview
 const metadataUriField = document.getElementById("metadataUriField");
-["twitter", "telegram", "website", "name", "symbol", "description"].forEach(
-  (f) => {
-    const el = form.elements[f];
-    if (!el) return;
-    el.addEventListener("input", () => {
-      if (metadataUriField && metadataUriField.value)
-        metadataUriField.value = "";
-    });
-  }
-);
 const imagePreview = document.getElementById("imagePreview");
 const imageInput = form.elements["image"];
 const aiImagePrompt = document.getElementById("aiImagePrompt");
@@ -45,14 +35,6 @@ const clearFormBtn = document.getElementById("clearFormBtn");
 
 // Theme select
 const themeSelect = document.getElementById("themeSelect");
-
-function invalidateImportedMetadataUri() {
-  if (metadataUriField && metadataUriField.value) {
-    metadataUriField.value = "";
-    // Optional: tell user why socials may not apply unless metadata is rebuilt
-    // status.textContent = "Metadata URI cleared (will use current form fields on launch).";
-  }
-}
 
 // ---------- Theme handling ----------
 (function initTheme() {
@@ -180,13 +162,6 @@ form.addEventListener("submit", async (e) => {
     submitBtn.textContent = "Launch Token";
   }
 });
-function invalidateImportedMetadataUri() {
-  if (metadataUriField && metadataUriField.value) {
-    metadataUriField.value = "";
-    // Optional: tell user why socials may not apply unless metadata is rebuilt
-    // status.textContent = "Metadata URI cleared (will use current form fields on launch).";
-  }
-}
 
 // Quick-select amount buttons
 const amountInput = form.elements["amount"];

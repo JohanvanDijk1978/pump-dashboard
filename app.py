@@ -132,8 +132,7 @@ def create_token():
 
     sell_delay_raw = request.form.get("sell_delay")
     ai_image_base64 = request.form.get("ai_image_base64")
-    metadata_uri_from_form = (request.form.get("metadata_uri") or "").strip()
-  # from imported token
+    metadata_uri_from_form = request.form.get("metadata_uri")  # from imported token
     instant_sell_flag = request.form.get("instant_sell")       # "on" if checkbox checked
 
     name = request.form.get("name") or "MyToken"
@@ -143,7 +142,6 @@ def create_token():
     telegram = request.form.get("telegram") or ""
     website = request.form.get("website") or ""
     image_file = request.files.get("image")
-
 
     do_instant_sell = instant_sell_flag == "on"
 
@@ -155,7 +153,6 @@ def create_token():
         return jsonify(
             {"error": "Token image is required (unless importing metadata)"}
         ), 400
-
 
     # Parse how many coins to launch
     try:
